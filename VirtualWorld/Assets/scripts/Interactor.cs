@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class followNPC : MonoBehaviour
+public class Interactor : MonoBehaviour
 {
     [SerializeField] Camera cam;
     public Interactable focus;
