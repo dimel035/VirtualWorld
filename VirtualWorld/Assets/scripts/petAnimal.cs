@@ -2,25 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class petAnimal : MonoBehaviour, IInteractable
+public class petAnimal : MonoBehaviour
 {
     [SerializeField]Animator anim;
-    bool pet=false;
 
-    public string GetDescription()
-    {
-        return "Pet";
-    }
 
-    public void Interact()
+    public void Interact(bool pet)
     {
         if (pet)
         {
-            anim.SetBool("pet", false);
+            Debug.Log("pet");
         }
         else
         {
+            Debug.Log("stop petting");
+        }
+        
+/*        if(pet)
+        {
             anim.SetBool("pet", true);
         }
+        else
+        {
+            anim.SetBool("pet", false);
+        }*/
     }
 }
