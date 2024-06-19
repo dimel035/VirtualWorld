@@ -21,14 +21,6 @@ public class npcRandomPatrol : MonoBehaviour
 
     void Update()
     {
-        int rand = Random.Range(0, 1000);
-        if (rand % 2 == 0)
-        {
-            animator.SetTrigger("dig");
-        }
-        else
-        {
-            animator.ResetTrigger("dig");
             if (agent.remainingDistance <= agent.stoppingDistance) //done with path
             {
                 Vector3 point;
@@ -38,7 +30,6 @@ public class npcRandomPatrol : MonoBehaviour
                     agent.SetDestination(point);
                 }
             }
-        }
 
     }
     bool RandomPoint(Vector3 center, float range, out Vector3 result)
