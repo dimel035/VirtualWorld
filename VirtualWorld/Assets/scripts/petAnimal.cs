@@ -5,16 +5,19 @@ using UnityEngine;
 public class petAnimal : MonoBehaviour
 {
     [SerializeField]Animator anim;
+    [SerializeField] npcRandomPatrol rp;
 
 
     public void Interact(bool pet)
     {
         if (pet)
         {
+            //rp.stopPatrol=true;
             Debug.Log("pet");
         }
         else
         {
+            //rp.stopPatrol = false;
             Debug.Log("stop petting");
         }
         

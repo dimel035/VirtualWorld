@@ -13,6 +13,8 @@ public class npcRandomPatrol : MonoBehaviour
     [SerializeField] private Transform centrePoint; //centre of the area the agent wants to move around in
     //instead of centrePoint you can set it as the transform of the agent if you don't care about a specific area
 
+    public bool stopPatrol=false;
+
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -21,6 +23,8 @@ public class npcRandomPatrol : MonoBehaviour
 
     void Update()
     {
+        if (!stopPatrol)
+        {
             if (agent.remainingDistance <= agent.stoppingDistance) //done with path
             {
                 Vector3 point;
@@ -30,6 +34,7 @@ public class npcRandomPatrol : MonoBehaviour
                     agent.SetDestination(point);
                 }
             }
+        }
 
     }
     bool RandomPoint(Vector3 center, float range, out Vector3 result)
