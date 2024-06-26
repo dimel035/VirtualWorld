@@ -1,134 +1,60 @@
-using StarterAssets;
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
-using UnityEngine.AI;
-using TMPro;
 
 public class Interactor : MonoBehaviour
 {
-    [SerializeField] Camera cam;
-    [SerializeField] GameObject interactionUI;
-    public Interactable focus;
-    public TextMeshProUGUI interactionText;
-    bool interacting = false;
-    petAnimal p;
+    public float interactDistance = 3.0f;
+    private Camera mainCamera;
+    private IInteractable currentInteractable;
 
-    Transform target;
-    NavMeshAgent agent;
-    ThirdPersonController tpc;
-
-    private void Start()
+    void Start()
     {
-        agent= GetComponent<NavMeshAgent>();
-        tpc= GetComponent<ThirdPersonController>();
+        mainCamera = Camera.main;
     }
 
-    // Update is called once per frame
     void Update()
     {
-        /*        if(target!=null)
-                {
-                    agent.SetDestination(target.position);
-                    FaceTarget();
-                }*/
-        Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        bool hitSmth = false;
-
-        if (Physics.Raycast(ray,out hit, 100))
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            Interactable interactable = hit.collider.GetComponent<Interactable>();
-            if (interactable != null) 
+            Interact();
+        }
+
+        CheckForHighlight();
+    }
+
+    void Interact()
+    {
+        if (currentInteractable != null)
+        {
+            currentInteractable.Interact();
+        }
+    }
+
+    void CheckForHighlight()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, interactDistance))
+        {
+            IInteractable interactable = hit.collider.GetComponent<IInteractable>();
+            if (interactable != null)
             {
-                hitSmth = true;
-                interactionText.text = "Pet";
-                interactionUI.SetActive(hitSmth);
-                if (Input.GetButtonDown("e"))
+                if (interactable != currentInteractable)
                 {
-                    if (!interacting)
+                    if (currentInteractable != null)
                     {
-                        SetFocus(interactable);
+                        currentInteractable.Unhighlight();
                     }
-                    else
-                    {
-                        Defocus();
-                    }
+                    currentInteractable = interactable;
+                    currentInteractable.Highlight();
                 }
-
+                return;
             }
-            else
-            {
-                hitSmth = false;
-                interactionText.text = "Interact";
-                interactionUI.SetActive(hitSmth);
-            }
-            
-        }
-    
-/*        if (Input.GetButtonDown("t"))
-        {
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-
-            if (Physics.Raycast(ray, out hit, 100))
-            {
-                Defocus();
-            }
-        }*/
-    }
-
-    void SetFocus(Interactable focusObject)
-    {
-        if(focusObject != focus)
-        {
-            if (focus != null)
-            {
-                focus.OnDefocused();
-            }
-            focus = focusObject;
-            p = new petAnimal();
-            p.Interact(true);
-            interacting= true;
-            //follow
         }
 
-        focusObject.OnFocused(transform);
-
-    }
-
-    void Defocus()
-    {
-        if (focus != null)
+        if (currentInteractable != null)
         {
-            focus.OnDefocused();
+            currentInteractable.Unhighlight();
+            currentInteractable = null;
         }
-        focus = null;
-        p.Interact(false);
-        p=null;
-        interacting = false;
     }
-
-/*    public void FollowTarget(Interactable currentTarget) 
-    {
-        agent.stoppingDistance = currentTarget.radius * .8f;
-        agent.updateRotation = false;
-
-        target = currentTarget.interactionTransform;
-        tpc.Move();
-    }
-
-    public void StopFollowingTarget()
-    {
-        agent.stoppingDistance = 0f;
-        agent.updateRotation = true;
-        target = null;
-    }
-
-    void FaceTarget()
-    {
-        Vector3 direction = (target.position - transform.position).normalized;
-        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
-    }*/
 }
